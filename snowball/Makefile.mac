@@ -1,0 +1,90 @@
+CC	=	g++
+
+
+X11INC	=	/opt/X11/include
+X11LIB	=	/opt/X11/lib
+GLINC	=	/usr/include
+GLLIB	=	/usr/lib
+LIBS	=	-lglut -lGL -lGLU -lX11 -lXmu -lXext -lm
+oDir	=	.
+Bin	=	.
+
+
+#--------------------------------------------------------------
+# Architecture dependent
+
+# Flags for includes and libraries
+
+CFLAGS	=	-O3 -I$(X11INC) -I$(GLINC)
+
+LFLAGS	=	-O -L$(X11LIB) -L$(GLLIB)
+
+EXOBJS	=	$(oDir)/newmain.o \
+		$(oDir)/Timer.o \
+		$(oDir)/Light.o \
+		$(oDir)/material.o \
+		$(oDir)/transparentmaterial.o \
+		$(oDir)/object.o \
+		$(oDir)/tree.o \
+		$(oDir)/random.o \
+		$(oDir)/target.o \
+		$(oDir)/ground.o \
+		$(oDir)/bullet.o \
+		$(oDir)/objectmanager.o \
+		$(oDir)/scene.o
+
+all:	$(Bin)/snowball
+objs:	$(EXOBJS)
+
+clean: 
+	rm -f snowball $(EXOBJS) core
+
+
+$(Bin)/snowball:	$(EXOBJS)
+	$(CC) -o snowball $(LFLAGS) $(EXOBJS) $(LIBS)
+
+$(oDir)/newmain.o: newmain.cpp object.h ground.h Timer.h tree.h target.h \
+		bullet.h random.h objectmanager.h scene.h
+	$(CC) -c $(CFLAGS) -o newmain.o newmain.cpp
+
+
+
+$(oDir)/object.o:	object.cpp  object.h
+	$(CC) -c $(CFLAGS) -o object.o object.cpp
+
+$(oDir)/scene.o:	scene.cpp  scene.h
+	$(CC) -c $(CFLAGS) -o scene.o scene.cpp
+	
+$(oDir)/objectmanager.o:	objectmanager.cpp  objectmanager.h object.h target.h bullet.h 
+	$(CC) -c $(CFLAGS) -o objectmanager.o objectmanager.cpp
+
+	
+$(oDir)/material.o: material.cpp material.h
+	$(CC) -c $(CFLAGS) -o material.o material.cpp
+
+$(oDir)/transparentmaterial.o: transparentmaterial.cpp transparentmaterial.h material.h
+	$(CC) -c $(CFLAGS) -o transparentmaterial.o transparentmaterial.cpp
+		
+$(oDir)/Light.o: Light.cpp Light.h
+	$(CC) -c $(CFLAGS) -o Light.o Light.cpp
+
+$(oDir)/ground.o: ground.cpp ground.h material.h object.h
+	$(CC) -c $(CFLAGS) -o ground.o ground.cpp
+
+$(oDir)/Timer.o: Timer.cpp Timer.h
+	$(CC) -c $(CFLAGS) -o Timer.o Timer.cpp 
+
+$(oDir)/tree.o: tree.cpp tree.h material.h object.h
+	$(CC) -c $(CFLAGS) -o tree.o tree.cpp
+
+$(oDir)/target.o: target.cpp target.h material.h object.h Timer.h random.h transparentmaterial.h
+	$(CC) -c $(CFLAGS) -o target.o target.cpp
+
+$(oDir)/bullet.o: bullet.cpp bullet.h material.h object.h
+	$(CC) -c $(CFLAGS) -o bullet.o bullet.cpp
+
+$(oDir)/random.o: random.h random.cpp
+	$(CC) -c $(CFLAGS) -o random.o random.cpp
+
+		
+
